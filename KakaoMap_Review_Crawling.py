@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 ######### 함수 정의 #########
 # --- 함수1: 대기 함수 --- 
 def time_wait(num, code): # css 찾을때 까지 대기
@@ -14,10 +8,6 @@ def time_wait(num, code): # css 찾을때 까지 대기
         print(code, '태그를 찾지 못하였습니다.')
         driver.quit()
     return wait
-
-
-# In[2]:
-
 
 # --- 함수2: 맛집 정보 출력 ---
 def sinchon_list_per_page():
@@ -32,7 +22,6 @@ def sinchon_list_per_page():
     avg_ratings = driver.find_elements(By.CSS_SELECTOR, '.rating > .score > em')
 
     # (3) 맛집 목록
-#     time.sleep(2)
     sinchon_list = driver.find_elements(By.CSS_SELECTOR, '.placelist > .PlaceItem')
     for index, sinchon in enumerate(sinchon_list):
         print(f"맛집 {index + 1}.")
@@ -66,8 +55,6 @@ def sinchon_list_per_page():
         sinchon_review_link = link1[index]
         print(sinchon_review_link)
 
-        
-        
         ###### II. 링크 정보 ######
         # *** 함수3 호출 ***
         review_num, keywords, review_dates, reviewer_names, review_ratings, review_keywords, review_contents, reviewer_review_nums, reviewer_review_avg_ratings = click_until_fold(sinchon_review_link)
@@ -97,32 +84,11 @@ def sinchon_list_per_page():
         dict_temp['리뷰별 내용'] = review_contents
         dict_temp['리뷰어 후기 개수'] = reviewer_review_nums
         dict_temp['리뷰어 평균 별점'] = reviewer_review_avg_ratings
-        
-#         dict_temp = {
-#         '식당명(ID)': sinchon_name,
-#         '유형': sinchon_type,
-#         '주소1': sinchon_addr1,
-#         '주소2': sinchon_addr2,
-#         '평균 별점': sinchon_avg_rating,
-#         '리뷰 개수': review_num,
-#         '키워드': keywords,
-#         '리뷰별 날짜': review_dates,
-#         '리뷰어 이름': reviewer_names,
-#         '리뷰별 별점': review_ratings,
-#         '리뷰별 키워드': review_keywords,
-#         '리뷰별 내용': review_contents,
-#         '리뷰어 후기 개수': reviewer_review_nums,
-#         '리뷰어 평균 별점': reviewer_review_avg_ratings
-#         }
 
         final_list.append(dict_temp)
         print(f'<{sinchon_name}> 크롤링 완료...')
         
     return final_list
-
-
-# In[3]:
-
 
 # --- 함수3: 버튼 클릭 + 리뷰 정보 크롤링 ---
 def click_until_fold(link):
@@ -135,7 +101,6 @@ def click_until_fold(link):
     service = Service()
     release = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE"
     version = requests.get(release).text
-    # driver = webdriver.Chrome(service=Service(ChromeDriverManager(version=version).install()))
     driver = webdriver.Chrome(service=Service(ChromeDriverManager(version=version).install()), options=chrome_options)
 
     driver.get(link)
@@ -143,7 +108,6 @@ def click_until_fold(link):
     index = 0
     
     while True:
-#         scroll_to_y_offset('.cont_evaluation')
         try:
             # Find the "More Reviews" button element
             time.sleep(2)
@@ -157,9 +121,7 @@ def click_until_fold(link):
 
             for e in elements:
                 if e.text == '후기 더보기':
-    #                 print(f"단수: {e}")
                     element = e
-    #                 print(f"단수: {element}")
                     print('CSS Select Success!')
                     print(f'버튼명: {element.text}')
                     element.send_keys(Keys.ENTER)
@@ -182,34 +144,6 @@ def click_until_fold(link):
             print(e)
             print('Error!')
             break
-        
-#     while True:
-# #         scroll_to_y_offset('.cont_evaluation')
-#         try:
-#             # Find the "More Reviews" button element
-#             time.sleep(2)
-#             show_more_button = WebDriverWait(driver, 10).until(
-#                 EC.element_to_be_clickable((By.CSS_SELECTOR, '.link_more'))
-#             )
-#             print('Found the CSS!')
-            
-#             # Get the current text of the button
-#             button_text = show_more_button.text
-#             print(f'버튼명: {button_text}')
-            
-#             # If the text is 'unfold', break out of the loop
-#             if button_text != '후기 더보기':
-#                 print('Click Done!')
-#                 break
-                
-#             # Click the button
-#             show_more_button.send_keys(Keys.ENTER)
-#             print("Click!")
-
-#         except Exception as e:
-#             print(e)
-#             print('Error!')
-#             break
     
     # Make lists
     review_dates = []
@@ -304,8 +238,6 @@ def click_until_fold(link):
     return review_num, keywords, review_dates, reviewer_names, review_ratings, review_keywords, review_contents, reviewer_review_nums, reviewer_review_avg_ratings
 
 
-# In[4]:
-
 
 ######### 라이브러리 임포트 #########
 # --- 라이브러리 - Selenium 1 ---
@@ -392,10 +324,6 @@ print("List Crawling Success!")
 # list 생성
 final_list = []
 
-
-# In[ ]:
-
-
 # 시작 시간
 start = time.time()
 print('[크롤링 시작...]')
@@ -445,10 +373,6 @@ print('[데이터 수집 완료]\n소요 시간 :', time.time() - start)
 print(final_list)
 driver.quit()  # 작업이 끝나면 창을 닫는다.
 
-
-# In[ ]:
-
-
 import pandas as pd
 import openpyxl
 # xlsx 파일로 저장
@@ -460,73 +384,3 @@ df
 with open('final_data.json', 'w', encoding='utf-8') as f:
     json.dump(final_list, f, indent=4, ensure_ascii=False)
 print(final_list)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# ### 07.31 error case ###
-# [👀] Data Exceeded 이슈
-# - ![image-9.png](attachment:image-9.png)
-# - 해결: https://dev-cini.tistory.com/38
-# 
-# [✅] 리뷰 총 개수랑 list lenght랑 일치하지 않는 이슈
-#     - driver.find_elements로 클릭하기 전에 time.sleep() 꼭 해줘야 함
-# [✅] 리뷰 링크 안에서, review_num까지는 잘 찍히는데, list 데이터 3까지만 찍히는 이슈
-# 1. (X) 클릭이 안 되었거나 
-#     - (확인) 클릭 수 찍어보기 by 함수 3 no.38(print('click!') >> 추가
-#     - 함수 3 no.23(webdriverwait(3,code))의 시간을 더 늘리기???
-# 2. (X) css select가 제대로 안 되었거나
-#     - 함수 3 no.78(time.sleep(n)) 추가하기???
-# 3. (O) 다른 css selector를 선택
-#     - '메뉴 더보기'가 있는 경우, 이 css selector를 먼저 선택하게 됨
-# ![image.png](attachment:image.png)
-# 
-# [✅] 2nd case - 크롤링 하다가 disconnnected 되는 이슈
-# - 첫 에러: ```Message: stale element reference: stale element not found```
-# ![image-5.png](attachment:image-5.png)
-# - 그 이후에 맛집 정보랑 리뷰 정보 불일치함 (전자가 잘못됨
-# ![image-6.png](attachment:image-6.png)
-# - 둘째 에러: 1와 동일
-# ![image-7.png](attachment:image-7.png)
-# - 마지막 에러: 페이지도 못 찾고 끝
-# ![image-8.png](attachment:image-8.png)
-# 
-# [✅] 1st case - 크롤링 하다가 disconnnected 되는 이슈: ** 10 **의 12. 용용선생 부터 막힘
-#     1. (X) time.sleep(2) 더 주기
-#     2. (O) 함수 3 no.23(webdriverwait(3,code)) 더 주기
-# ![image-2.png](attachment:image-2.png)
-# - CSS SELECT 까지는 OK.
-# ![image-4.png](attachment:image-4.png)
-# - ```Message: disconnected: not connected to DevTools
-#   (failed to check if window was closed: disconnected: not connected to DevTools)
-#   (Session info: headless chrome=115.0.5790.114)
-# Stacktrace:```
-# ![image-3.png](attachment:image-3.png)
-
-# In[ ]:
-
-
-
-
